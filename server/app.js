@@ -32,10 +32,23 @@ io.on("connection", (socket) => {
     socket.broadcast.emit('id1', `New User joined with ID = ${socket.id}`)
 
 
-    socket.on('message', (mess) => {
-        console.log(mess);
-        // io.emit('message',mess)
-        socket.broadcast.emit('message', mess)
+    // previous one
+    // socket.on('message', (mess) => {
+    //     console.log(mess);
+    //     // io.emit('message',mess)
+    //     socket.broadcast.emit('message', mess)
+    // })
+
+    //Added room functionlity
+    socket.on('message', ({ Room, message, tempUserID }) => {
+        console.log(tempUserID);
+        console.log(Room);
+        console.log(message);
+
+        socket.to(Room).emit("message", message, tempUserID)
+        // or
+        io.to(Room).emit("message", message, tempUserID)
+
     })
 
 
