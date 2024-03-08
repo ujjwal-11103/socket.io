@@ -1,5 +1,5 @@
-// const express = require("express")
 import express from "express"; //and not {}
+// const express = require("express")
 import { Server } from "socket.io";
 import { createServer } from 'http'
 import { Socket } from "dgram";
@@ -23,8 +23,7 @@ app.get('/', (req, res) => {
 
 // ye ek event trigger hai jab koi client connect hoga toh ye trigger hojayega
 io.on("connection", (socket) => {
-    console.log("User Connected");
-    console.log("Id :", socket.id);
+    console.log("User Connected with Id :", socket.id);
 
     // ye code sab socket ko messag transfer krega 
     socket.emit('id1', "Welcome to the server")
@@ -32,8 +31,19 @@ io.on("connection", (socket) => {
     //ye code woh particular client ko chodke jisme refrsh hua baki sabko messag deliver krega
     socket.broadcast.emit('id1', `New User joined with ID = ${socket.id}`)
 
-})
 
+    socket.on('message', (mess) => {
+        console.log(mess);
+        // io.emit('message',mess)
+        socket.broadcast.emit('message', mess)
+    })
+
+
+    // disconnect the user 
+    socket.on('disconnect', () => {
+        console.log("User Disconnected", socket.id);
+    })
+})
 
 
 const port = 3000;
