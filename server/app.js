@@ -41,16 +41,20 @@ io.on("connection", (socket) => {
 
     //Added room functionlity
     socket.on('message', ({ Room, message, tempUserID }) => {
-        console.log(tempUserID);
-        console.log(Room);
-        console.log(message);
+        // console.log(tempUserID);
+        console.log({ Room, message });
 
         socket.to(Room).emit("message", message, tempUserID)
         // or
-        io.to(Room).emit("message", message, tempUserID)
+        // io.to(Room).emit("message", message, tempUserID)
 
     })
 
+    // Group chat
+    socket.on('Join-Room', (RoomNamee, userID) => {
+        socket.join(RoomNamee)
+        console.log(`${userID} joined room ${RoomNamee}`);
+    })
 
     // disconnect the user 
     socket.on('disconnect', () => {

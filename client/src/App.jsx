@@ -23,7 +23,7 @@ const App = () => {
     })
 
     socket.on('message', (mess, tempUserIDD) => {
-      console.log(mess + `\n from user = ${tempUserIDD}`);
+      console.log(mess + ` from user = ${tempUserIDD}`);
 
       // for chat history
       setAllMessages((allmessages) => [...allmessages, mess])
@@ -32,11 +32,12 @@ const App = () => {
       socket.disconnect();
     }
 
-  }, [])
+  }, [socket])
 
 
   const [message, setMessage] = useState("")
   const [Room, setRoom] = useState("")
+  const [RoomName, setRoomName] = useState("")
   const [UserID, setUserID] = useState("")
   const [tempUserID, setTempUserID] = useState("")
   const [allmessages, setAllMessages] = useState([])
@@ -50,6 +51,11 @@ const App = () => {
     setRoom("")
   }
 
+  const RoomFormHandler = (e) => {
+    e.preventDefault();
+    socket.emit("Join-Room", RoomName,tempUserID)
+    setRoomName("")
+  }
 
   return (
 
@@ -58,16 +64,28 @@ const App = () => {
         <div>Chat</div>
         <h6>{UserID}</h6>
 
+        <form onSubmit={RoomFormHandler}>
+          <div>
+
+            <h6>Join any Room</h6>
+            <input type="text" placeholder="Room ID" value={RoomName} onChange={(e) => setRoomName(e.target.value)} /><br></br>
+            <button type='submit' onClick={(e) => setTempUserID(UserID)}>Join</button>
+
+          </div>
+        </form>
 
         <form onSubmit={formHandler}>
           <div >
 
             <input type="text" placeholder="Type your message here" value={message} onChange={(e) => setMessage(e.target.value)} /><br></br>
             <input type="text" placeholder="User Id" value={Room} onChange={(e) => setRoom(e.target.value)} /><br></br>
+            <button type='submit' onClick={(e) => setTempUserID(UserID)}>Send</button><br></br><br></br>
 
-            <button type='submit' onClick={(e) => setTempUserID(UserID)}>Send</button>
           </div>
         </form>
+
+
+
         <div>
           {
             allmessages.map((m, i) => (
